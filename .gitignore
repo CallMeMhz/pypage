@@ -1,0 +1,6 @@
+.ropeproject
+*.egg-info
+*.py[co]
+__pycache__
+dist/
+build/
