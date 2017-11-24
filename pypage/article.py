@@ -9,7 +9,7 @@ class Article(object):
         self.name = name
         self.content = content
         self.title = metadatas['title']
-        self.author = metadatas['author']
+        # self.author = metadatas['author']
         self.created_at = _format_time(metadatas['created_at'])
         if 'modified_at' in metadatas:
             self.modified_at = _format_time(metadatas['modified_at'])

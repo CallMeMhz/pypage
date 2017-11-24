@@ -1,4 +1,5 @@
 from setuptools import setup
+import os
 
 setup(
     name='pypage',
@@ -9,6 +10,10 @@ setup(
     author_email='callmemhz@gmail.com',
     url='callmemhz.github.io',
     packages=['pypage'],
+    package_data={
+        'pypage':[os.path.relpath(os.path.join(root, name), 'pypage')
+                  for root, _, names in os.walk(os.path.join('pypage', 'themes'))
+                  for name in names]},
     install_requires=[
         'jinja2',
         'markdown'

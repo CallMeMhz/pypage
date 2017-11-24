@@ -5,15 +5,15 @@ from jinja2.exceptions import TemplateNotFound
 from .reader import MarkdownReader
 from .article import Article
 
-_SINGLE_PAGE = ('base', )
 _DEFAULT_CONTEXT = {
-    'SITENAME': 'Juice',
-    'OWNER': 'Mega Hertz',
-    'HOME_URL': 'http://example.com',
-    'THEME': 'default',
-    'INPUT_PATH': 'content',
-    'OUTPUT_PATH': 'output',
+    'site_name': 'Juice',
+    'author': 'Mega Hertz',
+    'prefix_url': 'http://example.com',
+    'theme': 'default',
+    'input_path': 'content',
+    'output_path': 'output',
 }
+_THEMES_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Convert `path/filename.ext` to `filename`
 get_filename = lambda x: os.path.splitext(x)[0].split(os.sep)[-1]
@@ -45,7 +45,7 @@ class Generator(object):
         env = Environment(loader=FileSystemLoader(path))
 
         templates = {}
-        for template in ('article', ):
+        for template in ('article', 'index'):
             try:
                 templates[template] = env.get_template('%s.html' % template)
             except TemplateNotFound:
@@ -58,7 +58,7 @@ class Generator(object):
         context = context.copy()
         context.update(kwargs)
         output = template.render(context)
-        filename = os.path.join(self.context['OUTPUT_PATH'], filename)
+        filename = os.path.join(self.context['output_path'], filename)
 
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(output)
@@ -82,14 +82,24 @@ class ArticleGenerator(Generator):
 
     def generate(self):
         templates = self.get_templates(os.path.join(
-            'themes', self.context['THEME']
+            _THEMES_DIR, 'themes', self.context['theme']
         ))
 
-        files = self.get_files(self.context['INPUT_PATH'])
+        files = self.get_files(self.context['input_path'])
         self.process_files(files)
 
-        remove_directory(self.context['OUTPUT_PATH'])
+        # Clean output path and copy theme to output directory
+        remove_directory(self.context['output_path'])
+        shutil.copytree(os.path.join(_THEMES_DIR, 'themes', self.context['theme'], 'css'),
+                        os.path.join(self.context['output_path'], 'css'))
 
+        # Generate home page
+        self.generate_file('index.html',
+                           templates['index'],
+                           self.context,
+                           articles=self.articles)
+
+        # Generate articles pages
         for article in self.articles:
             self.generate_file(article.name + '.html',
                                templates['article'],
