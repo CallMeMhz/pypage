@@ -20,6 +20,15 @@ get_filename = lambda x: os.path.splitext(x)[0].split(os.sep)[-1]
 # Get the file extension name
 get_fileext = lambda x: os.path.splitext(x)[-1]
 
+
+def remove_directory(path):
+    try:
+        shutil.rmtree(path)
+    except:
+        pass
+    os.mkdir(path)
+
+
 class Generator(object):
 
     def __init__(self, **kwargs):
@@ -51,13 +60,6 @@ class Generator(object):
         output = template.render(context)
         filename = os.path.join(self.context['OUTPUT_PATH'], filename)
 
-        # Remove all existing files from output folder
-        try:
-            shutil.rmtree(self.context['OUTPUT_PATH'])
-        except:
-            pass
-        os.mkdir(self.context['OUTPUT_PATH'])
-
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(output)
 
@@ -85,6 +87,8 @@ class ArticleGenerator(Generator):
 
         files = self.get_files(self.context['INPUT_PATH'])
         self.process_files(files)
+
+        remove_directory(self.context['OUTPUT_PATH'])
 
         for article in self.articles:
             self.generate_file(article.name + '.html',
