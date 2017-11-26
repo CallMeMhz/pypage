@@ -6,7 +6,9 @@ from .reader import MarkdownReader
 from .article import Article
 
 _DEFAULT_CONTEXT = {
-    'site_name': 'Juice',
+    'lang': 'zh',
+    'site_name': 'Pypage',
+    'site_desc': """Welcome to my website !""",
     'author': 'Mega Hertz',
     'prefix_url': 'http://example.com',
     'theme': 'default',

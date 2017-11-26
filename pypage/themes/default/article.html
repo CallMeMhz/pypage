@@ -1,5 +1,34 @@
 {% extends "base.html" %}
+{% block title %}{{ article.title }} - {{ site_name }}{% endblock %}
 {% block container %}
-<header><h1>{{ article.title }}</h1></header>
-<article>{{ article.content }}</article>
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <header>
+            <h1 class="posttitle" itemprop="name headline">
+                {{ article.title }}
+            </h1>
+            <div class="meta">
+                <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                    <span itemprop="name">
+                        {% if article.author %}
+                            {{ article.author }}
+                        {% else %}
+                            {{ author }}
+                        {% endif %}
+                    </span>
+                </span>
+                <time datetime="{{ article.created_at }}" itemprop="datePublished">
+                    {{ article.created_at.strftime('%Y-%m-%d') }}
+                </time>
+                <div class="article-tag">
+                    <i class="fa fa-tag"></i>
+                    {% for tag in article.tags %}
+                        <a class="tag-link" href="/tags/{{ tag }}/">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </header>
+        <div class="content" itemprop="articleBody">
+            {{ article.content }}
+        </div>
+    </article>
 {% endblock %}

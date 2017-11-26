@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}">
+
 <head>
-    <meta charset="UTF-8">
-    <title>{{ site_title or site_name }}</title>
-    <link rel="stylesheet" href="css/style.css">
+    {% block head %}
+        <meta charset="UTF-8">
+        <title>{% block title %}{{ site_name }}{% endblock title %}</title>
+        <link rel="stylesheet" href="css/style.css">
+    {% endblock head %}
 </head>
+
 <body>
 
-<header class="banner">
-    <h1>{{ site_name }}</h1>
-</header>
-
+<div class="container">
 {% block container %}{% endblock %}
+</div>
 
 </body>
 </html>

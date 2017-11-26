@@ -1,8 +1,24 @@
 {% extends "base.html" %}
+
 {% block container %}
-<ul class="article_list">
-    {% for article in articles %}
-    <li><a href="{{ article.name }}.html">{{ article.title }}</a></li>
-    {% endfor %}
-</ul>
+    {% include "nav.html" %}
+
+    <section id="about">
+    {{ site_desc }}
+    </section>
+
+    <section id="writing">
+      <span class="h1"><a href="archives">Articles</a></span>
+      <ul class="post-list">
+          {% for article in articles %}
+              <li class="post-item">
+                  <time datetime="{{ article.created_at }}" itemprop="datePublished">
+                      {{ article.created_at.strftime('%Y-%m-%d') }}
+                  </time>
+                  <span><a href="{{ article.name }}.html">{{ article.title }}</a></span>
+              </li>
+          {% endfor %}
+      </ul>
+    </section>
+
 {% endblock %}
